@@ -1,0 +1,356 @@
+/* AcademicCalendar.css */
+.academic-calendar-container {
+    padding: 1.5rem;
+}
+
+.academic-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.academic-calendar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.academic-calendar-add-btn {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.academic-calendar-add-btn:hover {
+    background-color: #2563eb;
+    transform: scale(1.05);
+}
+
+.academic-calendar-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.academic-calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.academic-calendar-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.academic-calendar-nav-btn {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.academic-calendar-nav-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.academic-calendar-current-month {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.academic-calendar-view-toggle {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.academic-calendar-view-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: #f3f4f6;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.academic-calendar-view-btn.active {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.academic-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.academic-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.academic-calendar-weekday {
+    text-align: center;
+    font-weight: 500;
+    color: #6b7280;
+    padding: 0.5rem;
+}
+
+.academic-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.academic-calendar-day {
+    min-height: 6rem;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: white;
+    transition: all 0.2s ease;
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+.academic-calendar-day.current-month {
+    background-color: white;
+}
+
+.academic-calendar-day.other-month {
+    background-color: #f9fafb;
+    color: #9ca3af;
+}
+
+.academic-calendar-day.current-day {
+    border: 2px solid #3b82f6;
+}
+
+.academic-calendar-day-number {
+    text-align: right;
+    margin-bottom: 0.5rem;
+}
+
+.academic-calendar-events {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.academic-calendar-event {
+    font-size: 0.75rem;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+}
+
+.academic-calendar-event.academic {
+    background-color: #dbeafe;
+    color: #3b82f6;
+}
+
+.academic-calendar-event.exam {
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
+.academic极速飞艇开奖结果event.event {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.academic-calendar-event.holiday {
+    background-color: #fef3c7;
+    color: #ca8a04;
+}
+
+.academic-calendar-sidebar {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+}
+
+.academic-calendar-upcoming {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 极速飞艇开奖结果.1);
+    padding: 1.5rem;
+}
+
+.academic-calendar-upcoming-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.academic-calendar-upcoming-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.academic-calendar-upcoming-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.academic-calendar-upcoming-item:last-child {
+    border-bottom: none;
+}
+
+.academic-calendar-upcoming-info {
+    flex: 1;
+}
+
+.academic-calendar-upcoming-name {
+    font-weight: 500;
+}
+
+.academic-calendar-upcoming-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.academic-calendar-upcoming-type {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.academic-calendar-upcoming-type.academic {
+    background-color: #dbeafe;
+    color: #16a34a;
+}
+
+.academic-calendar-upcoming-type.exam {
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
+.academic-calendar-upcoming-type.event {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.academic-calendar-upcoming-type.holiday {
+    background-color: #fef3c7;
+    color: #ca8a04;
+}
+
+.academic-calendar-stats {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.academic-calendar-stats-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.academic-calendar-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.academic-calendar-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.academic-calendar-stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.academic-calendar-stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.academic-calendar-stat-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.academic-calendar-stat-bar {
+    width: 100%;
+    height: 0.5rem;
+    background-color: #e5e7eb;
+    border-radius: 9999极速飞艇开奖结果;
+    overflow: hidden;
+}
+
+.academic-calendar-stat-progress {
+    height: 100%;
+    border-radius: 9999px;
+}
+
+.academic-calendar-stat-progress.academic {
+    background-color: #3b82f6;
+}
+
+.academic-calendar-stat-progress.exam {
+    background-color: #ef4444;
+}
+
+.academic-calendar-stat-progress.event {
+    background-color: #22c55e;
+}
+
+.academic-calendar-stat-progress.holiday {
+    background-color: #eab308;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+    .academic-calendar-sidebar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .academic-calendar-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .academic-calendar-content {
+        margin-bottom: 0;
+    }
+    
+    .academic-calendar-sidebar {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

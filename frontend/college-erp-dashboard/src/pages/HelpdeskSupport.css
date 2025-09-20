@@ -1,0 +1,378 @@
+/* HelpdeskSupport.css */
+.helpdesk-container {
+    padding: 1.5rem;
+}
+
+.helpdesk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.helpdesk-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.helpdesk-add-btn {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.helpdesk-add-btn:hover {
+    background-color: #2563eb;
+    transform: scale(1.05);
+}
+
+.helpdesk-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.helpdesk-stat-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.helpdesk-stat-card:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.helpdesk-stat-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.helpdesk-stat-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.helpdesk-stat-card:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.helpdesk-stat-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.helpdesk-stat-info {
+    flex: 1;
+}
+
+.helpdesk-stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.极速飞艇开奖结果stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.helpdesk-stat-icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.helpdesk-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.helpdesk-filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: #f3f4f6;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.helpdesk-filter-btn.active {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.helpdesk-table-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease 0.4s forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.helpdesk-table-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.helpdesk-search-container {
+    display: flex;
+    align-items: center;
+    background-color: #f3f4f6;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.helpdesk-search-icon {
+    color: #9ca3af;
+    margin-right: 0.5rem;
+}
+
+.helpdesk-search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+.helpdesk-table-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.helpdesk-filter-icon-btn {
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background: white;
+    cursor: pointer;
+}
+
+.helpdesk-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.helpdesk-table th {
+    background-color: #f9fafb;
+    text-align: left;
+    padding: 1rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.helpdesk-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.helpdesk-table tr:hover {
+    background-color: #f9fafb;
+}
+
+.helpdesk-requester-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.helpdesk-avatar {
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: #dbeafe;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.helpdesk-avatar-icon {
+    color: #3b82f6;
+    font-size: 0.75rem;
+}
+
+.helpdesk-priority-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.helpdesk-priority-badge.high {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.helpdesk-priority-badge.medium {
+    background-color: #fef3c7;
+    color: #ca8a04;
+}
+
+.helpdesk-priority-badge.low {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.helpdesk-status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.helpdesk-status-badge.open {
+    background-color: #fef3c7;
+    color: #ca8a04;
+}
+
+.helpdesk-status-badge.progress {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.helpdesk-status-badge.resolved {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.helpdesk-view-btn {
+    color: #3b82f6;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.helpdesk-view-btn:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+.helpdesk-stats-sidebar {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.helpdesk-stats-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.helpdesk-stats-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.helpdesk-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.helpdesk-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.helpdesk-stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.helpdesk-stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.helpdesk-stat-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.helpdesk-stat-bar {
+    width: 100%;
+    height: 0.5rem;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.helpdesk-stat-progress {
+    height: 100%;
+    border-radius: 9999px;
+}
+
+.helpdesk-stat-progress.students {
+    background-color: #3b82f6;
+}
+
+.helpdesk-stat-progress.faculty {
+    background-color: #22c55e;
+}
+
+.helpdesk-stat-progress.staff {
+    background-color: #eab308;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (min-width: 640px) {
+    .helpdesk-table-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .helpdesk-search-container {
+        width: auto;
+    }
+}
+
+@media (min-width: 768px) {
+    .helpdesk-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .helpdesk-stats-sidebar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .helpdesk-stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

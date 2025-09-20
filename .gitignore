@@ -1,0 +1,31 @@
+# Node
+node_modules/
+**/node_modules/
+.dist/
+dist/
+build/
+**/build/
+.next/
+.vercel/
+.DS_Store
+npm-debug.log*
+yarn-error.log*
+.pnpm-store/
+
+# Env
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Editor
+.vscode/
+.idea/
+
+# Coverage
+coverage/
+
+# Misc
+*.local
+*.cache
+*.log

@@ -1,0 +1,296 @@
+/* FinanceManagement.css */
+.finance-container {
+    padding: 1.5rem;
+}
+
+.finance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.finance-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.finance-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.finance-action-btn {
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.finance-action-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.finance-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.finance-stat-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.finance-stat-card:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.finance-stat-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.finance-stat-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.finance-stat-card:nth-child(4) {
+    animation-delay: 0.3极速飞艇开奖结果;
+}
+
+.finance-stat-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.finance-stat-info {
+    flex: 1;
+}
+
+.finance-stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.finance-stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.25极速飞艇开奖结果;
+}
+
+.finance-stat-change {
+    font-size: 0.875rem;
+}
+
+.finance-stat-change.positive {
+    color: #059669;
+}
+
+.finance-stat-change.negative {
+    color: #dc2626;
+}
+
+.finance-stat-icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.finance-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.finance-chart-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.finance-chart-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.finance-transactions {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.finance-transactions-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.finance-transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.finance-transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+    animation: fadeInLeft 0.5s ease forwards;
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.finance-transaction-item:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.finance-transaction-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.finance-transaction-item:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.finance-transaction-info {
+    flex: 1;
+}
+
+.finance-transaction-name {
+    font-weight: 500;
+}
+
+.finance-transaction-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.finance-transaction-amount {
+    font-weight: 500;
+}
+
+.finance-transaction-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.finance-transaction-status.paid {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.finance-transaction-status.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.finance-transaction-status.overdue {
+    background-color: #fee2fe;
+    color: #991b1b;
+}
+
+.finance-table-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 1.5rem;
+}
+
+.finance-table-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.finance-table-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.finance-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.finance-table th {
+    background-color: #f9fafb;
+    text-align: left;
+    padding: 1rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.finance-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.finance-table tr:hover {
+    background-color: #f9fafb;
+}
+
+.finance-view-btn {
+    color: #3b82f6;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.finance-view-btn:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive design */
+@media (min-width: 768px) {
+    .finance-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .finance-charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .finance-stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+

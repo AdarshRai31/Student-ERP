@@ -1,0 +1,19 @@
+{
+  "name": "college-erp-dashboards",
+  "version": "1.0.0",
+  "description": "College ERP System with multiple dashboards",
+  "private": true,
+  "scripts": {
+    "start:all": "concurrently \"npm run start:auth\" \"npm run start:admin\" \"npm run start:faculty\" \"npm run start:family\" \"npm run start:student\"",
+    "start:auth": "cross-env PORT=3005 npm start --prefix auth-app",
+    "start:admin": "cross-env PORT=3001 npm start --prefix college-erp-dashboard",
+    "start:faculty": "cross-env PORT=3002 npm start --prefix faculty-dashboard",
+    "start:family": "cross-env PORT=3003 npm start --prefix faculty-dashboard/family-dashboard",
+    "start:student": "cross-env PORT=3004 npm start --prefix student-dashboard",
+    "install:all": "npm install && npm install --prefix auth-app && npm install --prefix college-erp-dashboard && npm install --prefix faculty-dashboard && npm install --prefix faculty-dashboard/family-dashboard && npm install --prefix student-dashboard"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
+  }
+}
