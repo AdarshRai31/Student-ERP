@@ -18,6 +18,9 @@ yarn-error.log*
 **/.env
 **/.env.*
 
+# Secrets (service accounts, keys)
+backend/goggle_apis/*.json
+
 # Editor
 .vscode/
 .idea/

@@ -19,40 +19,29 @@ import Signup from './pages/Signup';
 import { getToken, clearAuth } from './utils/auth';
 import { fetchJSON } from './utils/api';
 
-// Role-based login wrapper that uses URL to determine role
-const RoleBasedLogin: React.FC = () => {
-  const location = useLocation();
-  const path = location.pathname;
+// Import role-based login components
+import FacultyLoginContent from '../../faculty-dashboard/src/pages/Login';
+import StudentLoginContent from '../../student-dashboard/src/pages/Login';
 
-  if (path.startsWith('/admin')) {
-    return <Login />;
-  } else if (path.startsWith('/faculty')) {
-    // For now, redirect to admin login with faculty styling
-    // In a real implementation, you'd have separate components
-    return <Login />;
-  } else if (path.startsWith('/student')) {
-    // For now, redirect to admin login with student styling
-    // In a real implementation, you'd have separate components
-    return <Login />;
-  }
+// Role-based login component
+const RoleBasedLogin: React.FC<{ role: 'admin' | 'faculty' | 'student' }> = ({ role }) => {
+  const getLoginComponent = () => {
+    switch (role) {
+      case 'admin':
+        return <Login />;
+      case 'faculty':
+        return <FacultyLoginContent />;
+      case 'student':
+        return <StudentLoginContent />;
+      default:
+        return <Login />;
+    }
+  };
 
-  return <Login />;
-};
-
-// Role-based signup wrapper
-const RoleBasedSignup: React.FC = () => {
-  const location = useLocation();
-  const path = location.pathname;
-
-  if (path.startsWith('/admin')) {
-    return <Signup />;
-  } else if (path.startsWith('/faculty')) {
-    return <Signup />;
-  } else if (path.startsWith('/student')) {
-    return <Signup />;
-  }
-
-  return <Signup />;
+  return (
+    <div>
+    </div>
+  );
 };
 
 function App() {
@@ -60,62 +49,34 @@ function App() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const location = useLocation();
-  const navigate = useNavigate();
-
-  // Check if current path is an auth screen
   const isAuthScreen = location.pathname === '/login' || location.pathname === '/signup' ||
                      location.pathname.startsWith('/admin') ||
                      location.pathname.startsWith('/faculty') ||
                      location.pathname.startsWith('/student');
-
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 1024;
-      setIsMobile(mobile);
-      if (!mobile) {
-        setIsMobileOpen(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Validate token on load/route change
-  useEffect(() => {
-    const token = getToken();
-    if (!isAuthScreen && token) {
-      fetchJSON('/user/me').catch(() => {
-        clearAuth();
-        navigate('/login', { replace: true });
-      });
-    }
-  }, [isAuthScreen, location.pathname, navigate]);
-
+  const navigate = useNavigate();
+  const isLoginScreen = location.pathname === '/login';
+  const isSignupScreen = location.pathname === '/signup';
   return (
     isAuthScreen ? (
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/admin" element={<RoleBasedLogin />} />
-        <Route path="/admin/*" element={<RoleBasedLogin />} />
-        <Route path="/faculty" element={<RoleBasedLogin />} />
-        <Route path="/faculty/*" element={<RoleBasedLogin />} />
-        <Route path="/student" element={<RoleBasedLogin />} />
-        <Route path="/student/*" element={<RoleBasedLogin />} />
+        <Route path="/login" element={isLoginScreen ? <Login /> : <Navigate to="/login" replace />} />
+        <Route path="/signup" element={isSignupScreen ? <Signup /> : <Navigate to="/signup" replace />} />
+{{ ... }
+        <Route path="/faculty/*" element={<RoleBasedLogin role="faculty" />} />
+        <Route path="/student/*" element={<RoleBasedLogin role="student" />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     ) : (
       <div className="flex h-screen bg-gray-100">
-        <Sidebar 
-          isCollapsed={isSidebarCollapsed} 
+        <Sidebar
+          isCollapsed={isSidebarCollapsed}
           setIsCollapsed={setIsSidebarCollapsed}
           isMobile={isMobile}
           setIsMobileOpen={setIsMobileOpen}
         />
-        
+
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Navbar 
+          <Navbar
             onMenuClick={() => setIsMobileOpen(!isMobileOpen)}
           />
           <main className="flex-1 overflow-y-auto layout-content">

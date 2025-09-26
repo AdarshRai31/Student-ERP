@@ -1,5 +1,5 @@
 const express = require('express');
-const { readSheetData, appendToSheet, SHEET_NAMES } = require('../goggle_apis/sheets');
+const { readSheetData, appendToSheet, updateSheetData, SHEET_NAMES } = require('../goggle_apis/sheets');
 
 const router = express.Router();
 
@@ -27,6 +27,134 @@ router.get('/metrics', async (req, res) => {
     };
 
     res.json({ success: true, data });
+  } catch (err) {
+    console.error('Error computing metrics:', err);
+    res.status(500).json({ success: false, message: 'Error computing metrics', error: err.message });
+  }
+});
+
+// Helper to convert column index (0-based) to A1 notation letter(s)
+function columnIndexToLetter(index) {
+  let dividend = index + 1;
+  let columnName = '';
+  while (dividend > 0) {
+    let modulo = (dividend - 1) % 26;
+    columnName = String.fromCharCode(65 + modulo) + columnName;
+    dividend = Math.floor((dividend - modulo) / 26);
+  }
+  return columnName;
+}
+
+// POST /public/students
+// Body: { name?, firstName?, lastName?, email, course?, status? }
+router.post('/students', async (req, res) => {
+  try {
+    const sheetName = SHEET_NAMES.USERS || 'Students';
+    const rows = await readSheetData(sheetName);
+    const headers = (rows && rows[0]) ? rows[0].map(h => (h || '').toString()) : [];
+    const hmap = Object.fromEntries(headers.map((h, i) => [h.trim().toLowerCase(), i]));
+    const find = (...names) => {
+      for (const n of names) {
+        const k = n.toLowerCase();
+        if (hmap[k] !== undefined) return hmap[k];
+      }
+      return -1;
+    };
+
+    const email = (req.body.email || '').toString().trim();
+    if (!email) return res.status(400).json({ success: false, message: 'email is required' });
+
+    // Build row with same width as headers (or default to 6 cols)
+    const width = Math.max(headers.length, 6);
+    const row = new Array(width).fill('');
+
+    const nameIdx = find('name','student name','full name');
+    const firstIdx = find('first name','firstname','first');
+    const lastIdx = find('last name','lastname','last');
+    const emailIdx = find('email','student','student email','studentid','student_id');
+    const courseIdx = find('course','courseid','course_id','subject');
+    const statusIdx = find('status');
+
+    const name = (req.body.name || '').toString().trim();
+    const first = (req.body.firstName || '').toString().trim();
+    const last = (req.body.lastName || '').toString().trim();
+    const course = (req.body.course || '').toString().trim();
+    const status = (req.body.status || 'Active').toString().trim();
+
+    if (nameIdx >= 0 && name) row[nameIdx] = name;
+    if (firstIdx >= 0 && first) row[firstIdx] = first;
+    if (lastIdx >= 0 && last) row[lastIdx] = last;
+    if (emailIdx >= 0) row[emailIdx] = email; else row[0] = email;
+    if (courseIdx >= 0 && course) row[courseIdx] = course;
+    if (statusIdx >= 0 && status) row[statusIdx] = status;
+
+    const result = await appendToSheet(sheetName, row);
+    res.status(201).json({ success: true, message: 'Student created', data: { name, firstName: first, lastName: last, email, course, status }, sheetResult: result.data || result });
+  } catch (err) {
+    console.error('Error creating student:', err);
+    res.status(500).json({ success: false, message: 'Error creating student', error: err.message });
+  }
+});
+
+// PUT /public/students
+// Body: { email, name?, firstName?, lastName?, course?, status? }
+router.put('/students', async (req, res) => {
+  try {
+    const sheetName = SHEET_NAMES.USERS || 'Students';
+    const rows = await readSheetData(sheetName);
+    if (!rows || rows.length === 0) return res.status(404).json({ success: false, message: 'No sheet data' });
+    const headers = rows[0].map(h => (h || '').toString());
+    const hmap = Object.fromEntries(headers.map((h, i) => [h.trim().toLowerCase(), i]));
+    const find = (...names) => {
+      for (const n of names) {
+        const k = n.toLowerCase();
+        if (hmap[k] !== undefined) return hmap[k];
+      }
+      return -1;
+    };
+
+    const emailIdx = find('email','student','student email','studentid','student_id');
+    if (emailIdx < 0) return res.status(400).json({ success: false, message: 'Email column not found in sheet' });
+    const targetEmail = (req.body.email || '').toString().trim().toLowerCase();
+    if (!targetEmail) return res.status(400).json({ success: false, message: 'email is required' });
+
+    let rowIndex = -1; // 0-based index in rows array
+    for (let i = 1; i < rows.length; i++) {
+      const r = rows[i] || [];
+      const em = (r[emailIdx] || '').toString().trim().toLowerCase();
+      if (em && em === targetEmail) { rowIndex = i; break; }
+    }
+    if (rowIndex < 0) return res.status(404).json({ success: false, message: 'Student not found' });
+
+    // Build updated row by copying existing row
+    const existing = rows[rowIndex].slice();
+    const nameIdx = find('name','student name','full name');
+    const firstIdx = find('first name','firstname','first');
+    const lastIdx = find('last name','lastname','last');
+    const courseIdx = find('course','courseid','course_id','subject');
+    const statusIdx = find('status');
+
+    const updates = req.body || {};
+    if (nameIdx >= 0 && updates.name !== undefined) existing[nameIdx] = (updates.name || '').toString();
+    if (firstIdx >= 0 && updates.firstName !== undefined) existing[firstIdx] = (updates.firstName || '').toString();
+    if (lastIdx >= 0 && updates.lastName !== undefined) existing[lastIdx] = (updates.lastName || '').toString();
+    if (courseIdx >= 0 && updates.course !== undefined) existing[courseIdx] = (updates.course || '').toString();
+    if (statusIdx >= 0 && updates.status !== undefined) existing[statusIdx] = (updates.status || '').toString();
+
+    // Write back full row length of headers
+    const lastColLetter = columnIndexToLetter(Math.max(headers.length, existing.length) - 1);
+    const range = `A${rowIndex + 1}:${lastColLetter}${rowIndex + 1}`;
+    const padded = new Array(Math.max(headers.length, existing.length)).fill('');
+    for (let i = 0; i < existing.length; i++) padded[i] = existing[i];
+
+    const result = await updateSheetData(sheetName, range, [padded]);
+    res.json({ success: true, message: 'Student updated', data: { email: targetEmail, ...updates }, sheetResult: result.data || result });
+  } catch (err) {
+    console.error('Error updating student:', err);
+    res.status(500).json({ success: false, message: 'Error updating student', error: err.message });
+  }
+});
+ 
 
 // POST /public/messages
 // Appends a message row into Helpdesk_tickets
@@ -45,6 +173,78 @@ router.post('/messages', async (req, res) => {
   } catch (err) {
     console.error('Error posting message:', err);
     return res.status(500).json({ success: false, message: 'Error posting message', error: err.message });
+  }
+});
+
+// GET /public/students
+// Returns a basic list of students with name, email, course, status (flexible header mapping)
+// Optional: ?limit=5
+router.get('/students', async (req, res) => {
+  try {
+    const rows = await readSheetData(SHEET_NAMES.USERS || 'Students');
+    const out = [];
+    if (rows && rows.length > 0) {
+      const headers = (rows[0] || []).map(h => (h || '').toString());
+      const hmap = Object.fromEntries(headers.map((h, i) => [h.trim().toLowerCase(), i]));
+      const find = (...names) => {
+        for (const n of names) {
+          const k = n.toLowerCase();
+          if (hmap[k] !== undefined) return hmap[k];
+        }
+        return -1;
+      };
+
+      const nameIdx = find('name','student name','full name');
+      const firstIdx = find('first name','firstname','first');
+      const lastIdx = find('last name','lastname','last');
+      const emailIdx = find('email','student','student email','studentid','student_id');
+      const courseIdx = find('course','courseid','course_id','subject');
+      const statusIdx = find('status');
+
+      for (let i = 1; i < rows.length; i++) {
+        const r = rows[i] || [];
+        // Compose name from best available sources
+        let name = '';
+        if (nameIdx >= 0) name = (r[nameIdx] || '').toString();
+        if (!name && (firstIdx >= 0 || lastIdx >= 0)) {
+          const first = firstIdx >= 0 ? (r[firstIdx] || '').toString() : '';
+          const last = lastIdx >= 0 ? (r[lastIdx] || '').toString() : '';
+          name = `${first} ${last}`.trim();
+        }
+        if (!name && emailIdx >= 0) {
+          const em = (r[emailIdx] || '').toString();
+          const base = em.split('@')[0] || '';
+          name = base.replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+        out.push({
+          name,
+          email: emailIdx >= 0 ? (r[emailIdx] || '').toString() : '',
+          course: courseIdx >= 0 ? (r[courseIdx] || '').toString() : '',
+          status: statusIdx >= 0 ? (r[statusIdx] || '').toString() : '',
+        });
+      }
+    }
+
+    // Legacy limit support
+    const limit = Math.max(0, parseInt(req.query.limit || '0', 10) || 0);
+
+    // Pagination support: ?page=&pageSize=
+    const pageSize = Math.max(0, parseInt(req.query.pageSize || '0', 10) || 0);
+    const page = Math.max(1, parseInt(req.query.page || '1', 10) || 1);
+
+    let data = out;
+    if (pageSize > 0) {
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      data = out.slice(start, end);
+    } else if (limit > 0) {
+      data = out.slice(0, limit);
+    }
+
+    res.json({ success: true, data, count: data.length, total: out.length, page: pageSize > 0 ? page : undefined, pageSize: pageSize || undefined });
+  } catch (err) {
+    console.error('Error fetching students:', err);
+    res.status(500).json({ success: false, message: 'Error fetching students', error: err.message });
   }
 });
 
@@ -376,11 +576,6 @@ router.get('/assignments/headers', async (req, res) => {
   } catch (err) {
     console.error('Error fetching assignment headers:', err);
     res.status(500).json({ success: false, message: 'Error fetching assignment headers', error: err.message });
-  }
-});
-  } catch (err) {
-    console.error('Error computing metrics:', err);
-    res.status(500).json({ success: false, message: 'Error computing metrics', error: err.message });
   }
 });
 

@@ -1,0 +1,359 @@
+/* Login Page Styles - Pure CSS with Theme Variables */
+
+/* Main container */
+.login-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, hsl(var(--color-bg-secondary)) 0%, hsl(var(--color-bg-primary)) 50%, hsl(var(--color-bg-secondary)) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  transition: background 0.3s ease;
+}
+
+/* Grid layout */
+.login-grid {
+  width: 100%;
+  max-width: 80rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+
+@media (min-width: 768px) {
+  .login-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xl);
+  }
+}
+
+/* Brand section (left side) */
+.brand-section {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-2xl);
+  background: hsl(var(--color-surface) / 0.6);
+  border: 1px solid hsl(var(--color-border));
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .brand-section {
+    display: flex;
+  }
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.brand-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: hsl(var(--color-accent));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.125rem;
+  border-radius: var(--radius-md);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--color-text-primary));
+}
+
+.brand-subtitle {
+  font-size: 0.875rem;
+  color: hsl(var(--color-text-secondary));
+}
+
+.brand-heading {
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: hsl(var(--color-text-primary));
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+}
+
+.brand-description {
+  color: hsl(var(--color-text-secondary));
+  line-height: 1.6;
+}
+
+/* Login card (right side) */
+.login-card {
+  background: hsl(var(--color-surface));
+  border: 1px solid hsl(var(--color-border));
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-xl);
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .login-card {
+    padding: var(--space-2xl);
+  }
+}
+
+.login-header {
+  margin-bottom: var(--space-lg);
+}
+
+.login-title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: hsl(var(--color-text-primary));
+  margin-bottom: 0;
+}
+
+.login-subtitle {
+  color: hsl(var(--color-text-secondary));
+  margin-top: var(--space-xs);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.signup-name-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+@media (max-width: 640px) {
+  .signup-name-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--color-text-primary));
+  margin-bottom: var(--space-xs);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid hsl(var(--color-border));
+  border-radius: var(--radius-lg);
+  background: hsl(var(--color-surface));
+  color: hsl(var(--color-text-primary));
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: hsl(var(--color-accent));
+  box-shadow: 0 0 0 2px hsl(var(--color-accent) / 0.2);
+}
+
+.form-input::placeholder {
+  color: hsl(var(--color-text-muted));
+}
+
+.error-message {
+  color: hsl(var(--color-error));
+  font-size: 0.875rem;
+  margin-top: var(--space-xs);
+}
+
+.login-button {
+  width: 100%;
+  padding: 0.75rem;
+  background: hsl(var(--color-accent));
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background: hsl(var(--color-accent-hover));
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-footer {
+  color: hsl(var(--color-text-secondary));
+  font-size: 0.75rem;
+  margin-top: var(--space-lg);
+  text-align: center;
+}
+
+.signup-link {
+  color: hsl(var(--color-accent));
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.signup-link:hover {
+  color: hsl(var(--color-accent-hover));
+  text-decoration: underline;
+}
+
+/* Role-based styling overrides */
+[data-role="admin"] .brand-logo {
+  background: #4f46e5; /* Indigo */
+}
+
+[data-role="admin"] .login-button {
+  background: #4f46e5; /* Indigo */
+}
+
+[data-role="admin"] .login-button:hover {
+  background: #4338ca; /* Indigo hover */
+}
+
+[data-role="faculty"] .brand-logo {
+  background: #0d9488; /* Teal */
+}
+
+[data-role="faculty"] .login-button {
+  background: #0d9488; /* Teal */
+}
+
+[data-role="faculty"] .login-button:hover {
+  background: #0f766e; /* Teal hover */
+}
+
+/* Dark theme adjustments */
+[data-color-scheme="dark"] .login-container {
+  background: linear-gradient(135deg, hsl(var(--color-bg-secondary)) 0%, hsl(var(--color-bg-primary)) 50%, hsl(var(--color-bg-secondary)) 100%);
+}
+
+[data-color-scheme="dark"] .brand-section {
+  background: hsl(var(--color-surface) / 0.6);
+  border-color: hsl(var(--color-border));
+}
+
+[data-color-scheme="dark"] .login-card {
+  background: hsl(var(--color-surface));
+  border-color: hsl(var(--color-border));
+}
+
+[data-color-scheme="dark"] .form-input {
+  background: hsl(var(--color-surface));
+  border-color: hsl(var(--color-border));
+  color: hsl(var(--color-text-primary));
+}
+
+[data-color-scheme="dark"] .form-input::placeholder {
+  color: hsl(var(--color-text-muted));
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .login-container {
+    padding: var(--space-md);
+  }
+
+  .login-card {
+    padding: var(--space-lg);
+  }
+}
+
+/* Animation for smooth transitions */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.brand-section {
+  animation: fadeIn 0.5s ease-out 0.1s both;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  padding: 0.5rem;
+  border-radius: 50%;
+  background: hsl(var(--color-surface) / 0.8);
+  border: 1px solid hsl(var(--color-border));
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.theme-toggle:hover {
+  background: hsl(var(--color-surface) / 0.9);
+  transform: scale(1.05);
+}
+
+.theme-toggle:focus {
+  outline: none;
+  box-shadow: var(--shadow-lg), 0 0 0 2px hsl(var(--color-accent) / 0.3);
+}
+
+.theme-icon {
+  font-size: 1.125rem;
+  display: block;
+  line-height: 1;
+}
+
+/* Dark theme adjustments for toggle */
+[data-color-scheme="dark"] .theme-toggle {
+  background: hsl(var(--color-surface) / 0.8);
+  border-color: hsl(var(--color-border));
+}
+
+[data-color-scheme="dark"] .theme-toggle:hover {
+  background: hsl(var(--color-surface) / 0.9);
+}
+
+/* Mobile positioning */
+@media (max-width: 767px) {
+  .theme-toggle {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.375rem;
+  }
+
+  .theme-icon {
+    font-size: 1rem;
+  }
+}

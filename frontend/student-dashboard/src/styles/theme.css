@@ -1,0 +1,128 @@
+/* Theme variables for dynamic styling */
+:root {
+  /* Base colors - Light theme */
+  --color-bg-primary: 0 0% 100%;
+  --color-bg-secondary: 225 30% 96%;
+  --color-bg-tertiary: 0 0% 98%;
+  --color-surface: 0 0% 100%;
+  --color-surface-secondary: 0 0% 98%;
+  --color-text-primary: 222 84% 5%;
+  --color-text-secondary: 215 14% 34%;
+  --color-text-muted: 215 14% 56%;
+  --color-border: 214 32% 91%;
+  --color-border-focus: 221 83% 53%;
+  --color-accent: 239 84% 67%;
+  --color-accent-hover: 239 84% 60%;
+  --color-accent-active: 239 84% 50%;
+  --color-success: 142 76% 36%;
+  --color-warning: 38 92% 50%;
+  --color-error: 0 84% 60%;
+  --color-shadow: 0 0% 0% / 0.1;
+  --color-shadow-hover: 0 0% 0% / 0.2;
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(135deg, hsl(225 30% 96%) 0%, hsl(0 0% 100%) 50%, hsl(220 30% 96%) 100%);
+  --gradient-brand: linear-gradient(135deg, hsl(239 84% 67%) 0%, hsl(239 84% 60%) 100%);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Border radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 hsl(var(--color-shadow));
+  --shadow-md: 0 4px 6px -1px hsl(var(--color-shadow));
+  --shadow-lg: 0 10px 15px -3px hsl(var(--color-shadow));
+  --shadow-xl: 0 20px 25px -5px hsl(var(--color-shadow));
+}
+
+/* Dark theme */
+[data-color-scheme="dark"] {
+  --color-bg-primary: 222 84% 5%;
+  --color-bg-secondary: 217 33% 17%;
+  --color-bg-tertiary: 215 28% 17%;
+  --color-surface: 217 33% 17%;
+  --color-surface-secondary: 215 28% 17%;
+  --color-text-primary: 210 40% 98%;
+  --color-text-secondary: 217 33% 65%;
+  --color-text-muted: 215 20% 65%;
+  --color-border: 217 33% 17%;
+  --color-border-focus: 239 84% 67%;
+  --color-accent: 239 84% 67%;
+  --color-accent-hover: 239 84% 74%;
+  --color-accent-active: 239 84% 80%;
+  --color-success: 142 76% 56%;
+  --color-warning: 38 92% 60%;
+  --color-error: 0 84% 70%;
+  --color-shadow: 0 0% 0% / 0.3;
+  --color-shadow-hover: 0 0% 0% / 0.4;
+
+  --gradient-bg: linear-gradient(135deg, hsl(222 84% 5%) 0%, hsl(217 33% 17%) 50%, hsl(215 28% 17%) 100%);
+  --gradient-brand: linear-gradient(135deg, hsl(239 84% 67%) 0%, hsl(239 84% 74%) 100%);
+}
+
+/* Role-based accent colors */
+[data-role="admin"] {
+  --color-accent: 239 84% 67%; /* Indigo */
+  --color-accent-hover: 239 84% 60%;
+  --color-accent-active: 239 84% 50%;
+}
+
+[data-role="faculty"] {
+  --color-accent: 180 66% 50%; /* Teal */
+  --color-accent-hover: 180 66% 45%;
+  --color-accent-active: 180 66% 40%;
+}
+
+[data-role="student"] {
+  --color-accent: 142 76% 50%; /* Green */
+  --color-accent-hover: 142 76% 45%;
+  --color-accent-active: 142 76% 40%;
+}
+
+/* Utility classes */
+.transition-colors {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Focus styles */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--color-accent)), 0 0 0 4px hsl(var(--color-bg-primary));
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-border: 0 0% 0%;
+    --color-text-muted: 0 0% 0%;
+  }
+
+  [data-color-scheme="dark"] {
+    --color-border: 0 0% 100%;
+    --color-text-muted: 0 0% 100%;
+  }
+}

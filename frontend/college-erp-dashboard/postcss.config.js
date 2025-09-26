@@ -1,8 +1,4 @@
-// PostCSS config for Tailwind CSS (v4) and Autoprefixer
-// Note: Tailwind's PostCSS plugin moved to '@tailwindcss/postcss'
+// Force PostCSS to run with NO plugins (Tailwind removed entirely)
 module.exports = {
-  plugins: [
-    require('@tailwindcss/postcss'),
-    require('autoprefixer'),
-  ],
+  plugins: [],
 };

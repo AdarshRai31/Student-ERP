@@ -1,10 +1,15 @@
 import React from "react";
+import { clearAuth } from "../utils/auth";
 
 interface TopbarProps {
   title: string;
 }
 
 const Topbar: React.FC<TopbarProps> = ({ title }) => {
+  const onLogout = () => {
+    clearAuth();
+    window.location.reload();
+  };
   return (
     <header className="topbar">
       <div className="topbar-left">
@@ -28,6 +33,9 @@ const Topbar: React.FC<TopbarProps> = ({ title }) => {
           <span className="profile-name">Arjun Sharma</span>
           <i className="fas fa-chevron-down"></i>
         </div>
+        <button className="btn btn--outline btn--sm" onClick={onLogout}>
+          Logout
+        </button>
       </div>
     </header>
   );

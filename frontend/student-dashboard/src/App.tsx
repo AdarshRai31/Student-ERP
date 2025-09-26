@@ -11,8 +11,10 @@ import FeesSection from "./components/FeesSection";
 import LibrarySection from "./components/LibrarySection";
 import NoticesSection from "./components/NoticesSection";
 import MessagesSection from "./components/MessagesSection";
+import Login from "./pages/Login";
+import { getToken } from "./utils/auth";
 
-import { Student, Stats, Exam, Assignment, Fee, Book, Notice, Message } from "./types";
+import { Student, Stats } from "./types";
 import { fetchJSON } from "./utils/api";
 
 const mockStudent: Student = {
@@ -28,6 +30,7 @@ const mockStudent: Student = {
 const mockStats: Stats = { attendance: 0, cgpa: 0, upcomingExams: 0, feesDue: 0 };
 
 const App: React.FC = () => {
+  const [token, setToken] = useState<string | null>(getToken());
   const [currentSection, setCurrentSection] = useState("dashboard");
   const [stats, setStats] = useState<Stats>(mockStats);
   const [loading, setLoading] = useState(true);
@@ -101,6 +104,18 @@ const App: React.FC = () => {
     return () => { alive = false; };
   }, [studentEmail]);
 
+  // Validate token on load
+  useEffect(() => {
+    if (!token) return;
+    fetchJSON('/user/me').catch(() => {
+      try {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_username');
+      } catch {}
+      setToken(null);
+    });
+  }, [token]);
+
   const renderSection = () => {
     switch (currentSection) {
       case "dashboard":
@@ -141,11 +156,18 @@ const App: React.FC = () => {
     }
   };
 
+  if (!token) {
+    return (
+      <Login onSuccess={(t) => setToken(t)} />
+    );
+  }
+
   return (
     <div className="app-container">
       <Sidebar onNavigate={setCurrentSection} />
       <main className="main-content">
         <Topbar title={currentSection} />
+        {loading && <div className="loading-hint">Loading...</div>}
         <div className="dashboard-content">
           {renderSection()}
         </div>

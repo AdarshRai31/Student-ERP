@@ -176,3 +176,55 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Students Snapshot */
+.dashboard-snapshot-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--sp-6);
+}
+
+.dashboard-snapshot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-4);
+}
+
+.dashboard-snapshot-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dashboard-link-btn {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dashboard-snapshot-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-snapshot-table thead tr {
+  background: var(--color-surface-2);
+}
+
+.dashboard-snapshot-table th,
+.dashboard-snapshot-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.dashboard-snapshot-scroll {
+  overflow-x: auto; /* keep it safe on very small screens without causing page overflow */
+}

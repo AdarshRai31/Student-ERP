@@ -27,25 +27,36 @@ function resolveKeyFilePath(configPath) {
 	if (fs.existsSync(candidate3)) return candidate3;
 	return '';
 }
-
 /**
  * Creates and authenticates a Google Sheets API client.
  * @returns {Promise<import('googleapis').sheets_v4.Sheets>}
  */
 async function getSheetsClient() {
-	const keyFilePath = resolveKeyFilePath(GOOGLE_KEY_FILE);
-	if (!keyFilePath) {
-		throw new Error(`Service account key file not found. Check GOOGLE_KEY_FILE path.`);
-	}
-	const auth = new google.auth.GoogleAuth({
-		keyFile: keyFilePath,
-		scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-	});
-	const authClient = await auth.getClient();
-	return google.sheets({
-		version: 'v4',
-		auth: authClient,
-	});
+  const keyFilePath = resolveKeyFilePath(GOOGLE_KEY_FILE);
+  if (!keyFilePath) {
+    throw new Error(`Service account key file not found. Check GOOGLE_KEY_FILE path.`);
+  }
+  const auth = new google.auth.GoogleAuth({
+    keyFile: keyFilePath,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+  const authClient = await auth.getClient();
+  return google.sheets({
+    version: 'v4',
+    auth: authClient,
+  });
+}
+
+// Convert 0-based column index to A1 column letters
+function columnIndexToLetter(index) {
+  let dividend = index + 1;
+  let columnName = '';
+  while (dividend > 0) {
+    const modulo = (dividend - 1) % 26;
+    columnName = String.fromCharCode(65 + modulo) + columnName;
+    dividend = Math.floor((dividend - modulo) / 26);
+  }
+  return columnName;
 }
 
 /**
@@ -54,67 +65,127 @@ async function getSheetsClient() {
  * @returns {Promise<Object|null>} The user object if found, otherwise null.
  */
 async function findUserByUsername(username) {
-	try {
-		const sheets = await getSheetsClient();
-		const range = `${GOOGLE_USERS_SHEET_NAME}!A:X`;
+  try {
+    const sheets = await getSheetsClient();
+    const range = `${GOOGLE_USERS_SHEET_NAME}!A:X`;
 
-		const response = await sheets.spreadsheets.values.get({
-			spreadsheetId: GOOGLE_SPREADSHEET_ID,
-			range: range,
-		});
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SPREADSHEET_ID,
+      range: range,
+    });
 
-		const rows = response.data.values;
-		if (rows && rows.length) {
-			for (let i = 1; i < rows.length; i++) {
-				const row = rows[i];
-				if (row[USER_COLUMNS.USERNAME] === username) {
-					return {
-						username: row[USER_COLUMNS.USERNAME],
-						firstName: row[USER_COLUMNS.FIRST_NAME],
-						lastName: row[USER_COLUMNS.LAST_NAME],
-						password: row[USER_COLUMNS.PASSWORD_HASH],
-					};
-				}
-			}
-		}
-		return null;
-	} catch (err) {
-		console.error('Error reading from Google Sheet:', err);
-		throw new Error('Could not access the database.');
-	}
+    const rows = response.data.values || [];
+    if (!rows.length) return null;
+
+    // Header-based detection to be resilient to column shifts/renames
+    const headers = (rows[0] || []).map(h => (h || '').toString().trim().toLowerCase());
+    const findIdx = (names) => {
+      for (const n of names) {
+        const idx = headers.indexOf(n.toLowerCase());
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    };
+
+    // Try to detect columns by header; fall back to configured fixed indices
+    const emailIdx = (() => {
+      const idx = findIdx(['email address','email','username','user','email id','e-mail']);
+      return idx >= 0 ? idx : USER_COLUMNS.USERNAME;
+    })();
+    const firstNameIdx = (() => {
+      const idx = findIdx(['first name','firstname','first']);
+      return idx >= 0 ? idx : USER_COLUMNS.FIRST_NAME;
+    })();
+    const lastNameIdx = (() => {
+      const idx = findIdx(['last name','lastname','last']);
+      return idx >= 0 ? idx : USER_COLUMNS.LAST_NAME;
+    })();
+    const passwordIdx = (() => {
+      const idx = findIdx(['password hash','password','hash']);
+      return idx >= 0 ? idx : USER_COLUMNS.PASSWORD_HASH;
+    })();
+
+    const target = (username || '').toString().trim().toLowerCase();
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i] || [];
+      const email = (row[emailIdx] || '').toString().trim().toLowerCase();
+      if (email && email === target) {
+        return {
+          username: row[emailIdx] || '',
+          firstName: row[firstNameIdx] || '',
+          lastName: row[lastNameIdx] || '',
+          password: row[passwordIdx] || '',
+        };
+      }
+    }
+    return null;
+  } catch (err) {
+    console.error('Error reading from Google Sheet:', err);
+    throw new Error('Could not access the database.');
+  }
 }
 
 /**
  * Creates a new user by appending a row to the Google Sheet.
- * @param {Object} userData - The user data to add.
- * @returns {Promise<Object>} The result of the append operation.
+ * @param {{ username: string, firstName?: string, lastName?: string, password?: string }} userData
+ * @returns {Promise<Object>} Result of the append operation
  */
 async function createUser(userData) {
-	try {
-		const sheets = await getSheetsClient();
-		
-		// Create a row with all 24 columns, filling only the ones we need
-		const row = new Array(24).fill(''); // Initialize with empty strings
-		
-		// Fill in the user data at the correct column positions
-		row[USER_COLUMNS.USERNAME] = userData.username;        // Column C - Email address
-		row[USER_COLUMNS.FIRST_NAME] = userData.firstName;     // Column D - First Name
-		row[USER_COLUMNS.LAST_NAME] = userData.lastName;       // Column F - Last Name
-		row[USER_COLUMNS.PASSWORD_HASH] = userData.password;   // Column X - Password
-		
-		const values = [row];
+  try {
+    const sheets = await getSheetsClient();
+    const range = `${GOOGLE_USERS_SHEET_NAME}!A:X`;
 
-		return await sheets.spreadsheets.values.append({
-			spreadsheetId: GOOGLE_SPREADSHEET_ID,
-			range: `${GOOGLE_USERS_SHEET_NAME}!A1`,
-			valueInputOption: 'USER_ENTERED',
-			insertDataOption: 'INSERT_ROWS',
-			resource: { values },
-		});
-	} catch (err) {
-		console.error('Error writing to Google Sheet:', err);
-		throw new Error('Could not create user in the database.');
-	}
+    // Read headers to determine column indices
+    const resp = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SPREADSHEET_ID,
+      range,
+    });
+    const rows = resp.data.values || [];
+    const headers = (rows[0] || []).map(h => (h || '').toString().trim().toLowerCase());
+    const findIdx = (names) => {
+      for (const n of names) {
+        const idx = headers.indexOf(n.toLowerCase());
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    };
+
+    const emailIdx = (() => {
+      const idx = findIdx(['email address','email','username','user','email id','e-mail']);
+      return idx >= 0 ? idx : USER_COLUMNS.USERNAME;
+    })();
+    const firstNameIdx = (() => {
+      const idx = findIdx(['first name','firstname','first']);
+      return idx >= 0 ? idx : USER_COLUMNS.FIRST_NAME;
+    })();
+    const lastNameIdx = (() => {
+      const idx = findIdx(['last name','lastname','last']);
+      return idx >= 0 ? idx : USER_COLUMNS.LAST_NAME;
+    })();
+    const passwordIdx = (() => {
+      const idx = findIdx(['password hash','password','hash']);
+      return idx >= 0 ? idx : USER_COLUMNS.PASSWORD_HASH;
+    })();
+
+    const width = Math.max(headers.length, 24);
+    const row = new Array(width).fill('');
+    row[emailIdx] = (userData.username || '').toString();
+    if (userData.firstName !== undefined) row[firstNameIdx] = (userData.firstName || '').toString();
+    if (userData.lastName !== undefined) row[lastNameIdx] = (userData.lastName || '').toString();
+    if (userData.password !== undefined) row[passwordIdx] = (userData.password || '').toString();
+
+    return await sheets.spreadsheets.values.append({
+      spreadsheetId: GOOGLE_SPREADSHEET_ID,
+      range: `${GOOGLE_USERS_SHEET_NAME}!A1`,
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      resource: { values: [row] },
+    });
+  } catch (err) {
+    console.error('Error writing to Google Sheet (createUser):', err);
+    throw new Error('Could not create user in the database.');
+  }
 }
 
 /**
@@ -124,47 +195,65 @@ async function createUser(userData) {
  * @returns {Promise<Object>} The result of the update operation.
  */
 async function updateUserPassword(username, hashedPassword) {
-	try {
-		const sheets = await getSheetsClient();
-		const range = `${GOOGLE_USERS_SHEET_NAME}!A:X`;
+  try {
+    const sheets = await getSheetsClient();
+    const range = `${GOOGLE_USERS_SHEET_NAME}!A:X`;
 
-		// First, get all rows to find the user's row
-		const response = await sheets.spreadsheets.values.get({
-			spreadsheetId: GOOGLE_SPREADSHEET_ID,
-			range: range,
-		});
+    // First, get all rows to find the user's row
+    const resp = await sheets.spreadsheets.values.get({
+      spreadsheetId: GOOGLE_SPREADSHEET_ID,
+      range: range,
+    });
 
-		const rows = response.data.values;
-		if (rows && rows.length) {
-			for (let i = 1; i < rows.length; i++) {
-				const row = rows[i];
-				if (row[USER_COLUMNS.USERNAME] === username) {
-					// Found the user, now update their password
-					const rowNumber = i + 1; // Google Sheets uses 1-based indexing
-					const cellAddress = `${GOOGLE_USERS_SHEET_NAME}!X${rowNumber}`;
-					
-					return await sheets.spreadsheets.values.update({
-						spreadsheetId: GOOGLE_SPREADSHEET_ID,
-						range: cellAddress,
-						valueInputOption: 'USER_ENTERED',
-						resource: {
-							values: [[hashedPassword]]
-						},
-					});
-				}
-			}
-		}
-		throw new Error('User not found for password update');
-	} catch (err) {
-		console.error('Error updating password in Google Sheet:', err);
-		throw new Error('Could not update password in the database.');
-	}
+    const rows = resp.data.values || [];
+    if (!rows.length) throw new Error('User not found for password update');
+
+    const headers = (rows[0] || []).map(h => (h || '').toString().trim().toLowerCase());
+    const findIdx = (names) => {
+      for (const n of names) {
+        const idx = headers.indexOf(n.toLowerCase());
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    };
+    const emailIdx = (() => {
+      const idx = findIdx(['email address','email','username','user','email id','e-mail']);
+      return idx >= 0 ? idx : USER_COLUMNS.USERNAME;
+    })();
+    const passwordIdx = (() => {
+      const idx = findIdx(['password hash','password','hash']);
+      return idx >= 0 ? idx : USER_COLUMNS.PASSWORD_HASH;
+    })();
+
+    const target = (username || '').toString().trim().toLowerCase();
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i] || [];
+      const email = (row[emailIdx] || '').toString().trim().toLowerCase();
+      if (email && email === target) {
+        const rowNumber = i + 1; // 1-based
+        const colLetter = columnIndexToLetter(passwordIdx);
+        const cellAddress = `${GOOGLE_USERS_SHEET_NAME}!${colLetter}${rowNumber}`;
+
+        return await sheets.spreadsheets.values.update({
+          spreadsheetId: GOOGLE_SPREADSHEET_ID,
+          range: cellAddress,
+          valueInputOption: 'USER_ENTERED',
+          resource: { values: [[hashedPassword]] },
+        });
+      }
+    }
+
+    throw new Error('User not found for password update');
+  } catch (err) {
+    console.error('Error updating password in Google Sheet:', err);
+    throw new Error('Could not update password in the database.');
+  }
 }
 
 // ==================== GENERIC SHEET FUNCTIONS ====================
 
 /**
- * Generic function to read data from any sheet
+{{ ... }}
  * @param {string} sheetName - Name of the sheet to read from
  * @param {string} range - Range to read (e.g., 'A:Z' or 'A1:C10')
  * @returns {Promise<Array>} Array of rows
