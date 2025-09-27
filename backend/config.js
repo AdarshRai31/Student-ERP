@@ -11,9 +11,24 @@ if (fs.existsSync(sheetEnvPath)) {
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const PORT = process.env.PORT || 3000;
-const GOOGLE_CREDENTIALS = process.env.GOOGLE_CREDENTIALS_JSON 
-  ? JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON)
-  : require('./goggle_apis/service-account-k.json');
+// Handle Google Cloud credentials
+let GOOGLE_CREDENTIALS;
+try {
+  if (process.env.GOOGLE_CREDENTIALS_JSON) {
+    console.log('Using Google credentials from environment variable');
+    GOOGLE_CREDENTIALS = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+  } else if (process.env.NODE_ENV !== 'production') {
+    console.log('Using local Google credentials file');
+    GOOGLE_CREDENTIALS = require('./goggle_apis/service-account-k.json');
+  } else {
+    console.error('❌ Google Cloud credentials not found. Please set GOOGLE_CREDENTIALS_JSON environment variable in production.');
+    process.exit(1);
+  }
+} catch (error) {
+  console.error('❌ Failed to load Google Cloud credentials:', error.message);
+  process.exit(1);
+}
+
 const GOOGLE_KEY_FILE = GOOGLE_CREDENTIALS;
 const GOOGLE_SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || '1w3p3YF1w9B3w9B3w9B3w9B3w9B3w9B3w9B3w9B3';
 const GOOGLE_USERS_SHEET_NAME = process.env.GOOGLE_USERS_SHEET_NAME || "Master_Students";

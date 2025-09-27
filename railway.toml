@@ -1,23 +1,37 @@
 # Railway configuration for College ERP monorepo
 [build]
-builder = "railpack"
-memory = "2GB"
+builder = "nixpacks"
+memory = "2048"
 
 [deploy]
-startCommand = "./start.sh"
+startCommand = "npm run start:all"
 healthcheckPath = "/"
-nodeVersion = "18"
+healthcheckTimeout = 100
+restartPolicyType = "on-failure"
+restartPolicyMaxRetries = 5
+
+[build.args]
+NODE_ENV = "production"
+NODE_VERSION = "18"
+
+[build.environment]
+NPM_CONFIG_PRODUCTION = "false"
+NODE_ENV = "production"
 
 [[services]]
-name = "college-erp"
+name = "student-erp"
 source = "."
 
 [services.env]
 NODE_ENV = "production"
 PORT = "3000"
 
-# Node.js version for better compatibility
-NODE_VERSION = "18"
+# Google Sheets API Configuration
+GOOGLE_CREDENTIALS_JSON = { type = "string", required = true }
+GOOGLE_SPREADSHEET_ID = { type = "string", required = true }
+
+# JWT Configuration
+JWT_SECRET = { type = "string", required = true }
 
 # JWT Configuration
 JWT_SECRET = "student-erp-secure-jwt-key-2024-change-in-production"
