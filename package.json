@@ -1,0 +1,30 @@
+{
+  "name": "college-erp-dashboards",
+  "version": "1.0.0",
+  "description": "College ERP System with multiple role-based dashboards",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "npm run start:all",
+    "start:all": "concurrently \"npm run start:auth\" \"npm run start:admin\" \"npm run start:faculty\" \"npm run start:family\" \"npm run start:student\"",
+    "start:auth": "cross-env PORT=3005 npm start --prefix auth-app",
+    "start:admin": "cross-env PORT=3001 npm start --prefix college-erp-dashboard",
+    "start:faculty": "cross-env PORT=3002 npm start --prefix faculty-dashboard",
+    "start:family": "cross-env PORT=3003 npm start --prefix faculty-dashboard/family-dashboard",
+    "start:student": "cross-env PORT=3004 npm start --prefix student-dashboard",
+    "build:all": "npm run build:admin && npm run build:faculty && npm run build:student",
+    "build:admin": "cd frontend/college-erp-dashboard && npm run build",
+    "build:faculty": "cd frontend/faculty-dashboard && npm run build",
+    "build:student": "cd frontend/student-dashboard && npm run build",
+    "install:all": "npm install && cd frontend/college-erp-dashboard && npm install && cd ../faculty-dashboard && npm install && cd ../student-dashboard && npm install"
+  },
+  "keywords": ["college", "erp", "dashboard", "react", "nodejs"],
+  "author": "Adarsh Rai",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

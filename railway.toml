@@ -1,0 +1,39 @@
+# Railway configuration for College ERP monorepo
+[build]
+builder = "railpack"
+
+[deploy]
+startCommand = "./start.sh"
+healthcheckPath = "/"
+
+[[services]]
+name = "college-erp"
+source = "."
+
+[services.env]
+NODE_ENV = "production"
+PORT = "3000"
+
+# JWT Configuration
+JWT_SECRET = "your-jwt-secret-key-here"
+
+# Google Sheets Integration (configure these with your actual values)
+GOOGLE_KEY_FILE = "path-to-your-service-account-key.json"
+GOOGLE_SPREADSHEET_ID = "your-google-spreadsheet-id"
+GOOGLE_USERS_SHEET_NAME = "Master_Students"
+GOOGLE_COURSES_SHEET_NAME = "Courses"
+GOOGLE_ENROLLMENTS_SHEET_NAME = "Enrollments"
+GOOGLE_GRADES_SHEET_NAME = "Grades"
+GOOGLE_ATTENDANCE_SHEET_NAME = "Attendance"
+GOOGLE_FACULTY_SHEET_NAME = "Faculty"
+GOOGLE_DEPARTMENTS_SHEET_NAME = "Departments"
+
+# Build all frontend apps
+[build.steps]
+"1" = "npm ci"
+"2" = "npm run build:all"
+
+# Or individual builds if needed
+# "1" = "cd frontend/college-erp-dashboard && npm ci && npm run build"
+# "2" = "cd frontend/faculty-dashboard && npm ci && npm run build"
+# "3" = "cd frontend/student-dashboard && npm ci && npm run build"
