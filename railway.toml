@@ -1,10 +1,12 @@
 # Railway configuration for College ERP monorepo
 [build]
 builder = "railpack"
+memory = "2GB"
 
 [deploy]
 startCommand = "./start.sh"
 healthcheckPath = "/"
+nodeVersion = "18"
 
 [[services]]
 name = "college-erp"
@@ -13,6 +15,9 @@ source = "."
 [services.env]
 NODE_ENV = "production"
 PORT = "3000"
+
+# Node.js version for better compatibility
+NODE_VERSION = "18"
 
 # JWT Configuration
 JWT_SECRET = "student-erp-secure-jwt-key-2024-change-in-production"
