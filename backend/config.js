@@ -4,23 +4,23 @@ const path = require('path');
 // Load .env if present
 require('dotenv').config();
 
-// Additionally load sheet.env if present (won't override existing vars)
 const sheetEnvPath = path.join(__dirname, 'sheet.env');
 if (fs.existsSync(sheetEnvPath)) {
 	require('dotenv').config({ path: sheetEnvPath, override: false });
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || "change-me-in-env";
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 const PORT = process.env.PORT || 3000;
-
-const GOOGLE_KEY_FILE = process.env.GOOGLE_KEY_FILE || "";
-const GOOGLE_SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || "";
+const GOOGLE_CREDENTIALS = process.env.GOOGLE_CREDENTIALS_JSON 
+  ? JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON)
+  : require('./goggle_apis/service-account-k.json');
+const GOOGLE_KEY_FILE = GOOGLE_CREDENTIALS;
+const GOOGLE_SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || '1w3p3YF1w9B3w9B3w9B3w9B3w9B3w9B3w9B3w9B3';
 const GOOGLE_USERS_SHEET_NAME = process.env.GOOGLE_USERS_SHEET_NAME || "Master_Students";
 
 // Define all sheet names for the ERP system
 const SHEET_NAMES = {
 	USERS: process.env.GOOGLE_USERS_SHEET_NAME || "Master_Students",
-	COURSES: process.env.GOOGLE_COURSES_SHEET_NAME || "Courses",
 	ENROLLMENTS: process.env.GOOGLE_ENROLLMENTS_SHEET_NAME || "Enrollments",
 	GRADES: process.env.GOOGLE_GRADES_SHEET_NAME || "Grades",
 	ATTENDANCE: process.env.GOOGLE_ATTENDANCE_SHEET_NAME || "Attendance",
