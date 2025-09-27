@@ -15,12 +15,12 @@ NODE_ENV = "production"
 PORT = "3000"
 
 # JWT Configuration
-JWT_SECRET = "your-jwt-secret-key-here"
+JWT_SECRET = "student-erp-secure-jwt-key-2024-change-in-production"
 
 # Google Sheets Integration (configure these with your actual values)
-GOOGLE_KEY_FILE = "path-to-your-service-account-key.json"
-GOOGLE_SPREADSHEET_ID = "your-google-spreadsheet-id"
-GOOGLE_USERS_SHEET_NAME = "Master_Students"
+GOOGLE_KEY_FILE = "goggle_apis/service-account-k.json"
+GOOGLE_SPREADSHEET_ID = "17WaIRuXmMZXzCiocJo6EMoYz5kyTg2g667AQbSufY-k"
+GOOGLE_USERS_SHEET_NAME = "Students"
 GOOGLE_COURSES_SHEET_NAME = "Courses"
 GOOGLE_ENROLLMENTS_SHEET_NAME = "Enrollments"
 GOOGLE_GRADES_SHEET_NAME = "Grades"
