@@ -35,6 +35,7 @@ const App: React.FC = () => {
   const [stats, setStats] = useState<Stats>(mockStats);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<Student | null>(null);
 
   const studentEmail = useMemo(() => {
     const keys = [
@@ -104,24 +105,46 @@ const App: React.FC = () => {
     return () => { alive = false; };
   }, [studentEmail]);
 
-  // Validate token on load
+  // Validate token on load and fetch user data
   useEffect(() => {
     if (!token) return;
-    fetchJSON('/user/me').catch(() => {
+    
+    const fetchUserData = async () => {
       try {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_username');
-      } catch {}
-      setToken(null);
-    });
+        const userData = await fetchJSON('/user/me');
+        if (userData && userData.success && userData.user) {
+          setUser({
+            name: `${userData.user.firstName} ${userData.user.lastName}`.trim(),
+            email: userData.user.username,
+            rollNumber: userData.user.studentId || '',
+            course: 'BTech Computer Science', // Default value, can be updated if available from backend
+            year: '3rd Year', // Default value, can be updated if available from backend
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+            phone: '' // Can be updated if available from backend
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+        try {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('auth_username');
+        } catch {}
+        setToken(null);
+      }
+    };
+
+    fetchUserData();
   }, [token]);
 
   const renderSection = () => {
+    // Use the user data if available, otherwise fall back to mock data
+    const studentData = user || mockStudent;
+    
     switch (currentSection) {
       case "dashboard":
         return (
           <>
-            <ProfileCard student={mockStudent} />
+            <ProfileCard student={studentData} />
             {error && <div className="text-sm text-red-500">{error}</div>}
             <StatsSection stats={stats} />
             <AttendanceSection limit={10} />
@@ -134,7 +157,7 @@ const App: React.FC = () => {
           </>
         );
       case "profile":
-        return <ProfileCard student={mockStudent} />;
+        return <ProfileCard student={studentData} />;
       case "attendance":
         return <AttendanceSection />;
       case "exams":

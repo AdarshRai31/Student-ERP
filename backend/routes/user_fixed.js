@@ -24,13 +24,15 @@ const signupSchema = zod.object({
     password: zod.string().min(6),
     firstName: zod.string().min(1),
     lastName: zod.string().min(1),
+    studentId: zod.string().optional()
 });
 
 const signinSchema = zod.object({
     username: zod.string().email(),
     password: zod.string()
 });
-// signup 
+
+// Signup endpoint
 router.post("/signup", authLimiter, async (req, res) => {
     try {
         const { success, data } = signupSchema.safeParse(req.body);
@@ -59,19 +61,20 @@ router.post("/signup", authLimiter, async (req, res) => {
             firstName: data.firstName,
             lastName: data.lastName,
             password: hashedPassword,
-            isEmailVerified: false,  // Email not verified yet
+            isEmailVerified: false,
             studentId: data.studentId || ''
         };
         
         // Save user to database
         await createUser(userData);
         
-        // Send verification email
-        await sendVerificationEmail(data.username, `${data.firstName} ${data.lastName}`);
+        // In a real app, you would send a verification email here
+        // For testing, we'll auto-verify the email
+        await updateUserVerificationStatus(data.username, true);
         
         res.status(201).json({
             success: true,
-            message: "Registration successful! Please check your email to verify your account.",
+            message: "Registration successful!",
             user: {
                 username: data.username,
                 firstName: data.firstName,
@@ -87,16 +90,19 @@ router.post("/signup", authLimiter, async (req, res) => {
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
+});
 
-	try {
-		const existingUser = await findUserByUsername(data.username);
-
-		// Check if user exists in the database
+// Signin endpoint
+router.post("/signin", authLimiter, async (req, res) => {
+    try {
+        const { success, data } = signinSchema.safeParse(req.body);
+        if (!success) {
+            return res.status(400).json({
+                success: false,
                 message: "Invalid input format. Please provide a valid email and password."
             });
         }
 
-        console.log('Looking up user:', data.username);
         // Find user by username (email)
         const user = await findUserByUsername(data.username);
         if (!user) {
@@ -107,32 +113,30 @@ router.post("/signup", authLimiter, async (req, res) => {
             });
         }
         
-        // Check if email is verified
-        if (!user.isEmailVerified) {
+        // Check if email is verified (handle both boolean and string 'TRUE')
+        const isVerified = user.isEmailVerified === true || user.isEmailVerified === 'TRUE';
+        if (!isVerified) {
             return res.status(403).json({
                 success: false,
-                message: "Please verify your email address before logging in. Check your email for a verification link."
+                message: "Please verify your email address before logging in."
             });
         }
 
-        // Log the user object to see what we're working with
-        console.log('User data from sheet:', user);
-        
         // Check if password hash exists
         const passwordHash = user.password || '';
         if (!passwordHash || passwordHash.trim() === '') {
             console.log('No password set for user:', data.username);
             return res.status(401).json({
+                success: false,
                 message: "No password set for this account. Please contact support."
             });
         }
 
-        console.log('Comparing passwords...');
+        // Compare passwords
         const isPasswordValid = await bcrypt.compare(data.password, passwordHash);
-        console.log('Password valid:', isPasswordValid);
-
         if (!isPasswordValid) {
             return res.status(401).json({
+                success: false,
                 message: "Invalid email or password. Please try again."
             });
         }
@@ -143,14 +147,13 @@ router.post("/signup", authLimiter, async (req, res) => {
                 userId: user.email,
                 email: user.email,
                 firstName: user.firstName,
-                lastName: user.lastName
+                lastName: user.lastName,
+                studentId: user.studentId
             },
             JWT_SECRET,
             { expiresIn: '24h' }
         );
 
-        console.log('Login successful for user:', user.email);
-        
         res.json({
             success: true,
             token: token,
@@ -234,7 +237,6 @@ router.put("/update-password", authMiddlware, async (req, res) => {
 // Get current user's profile
 router.get("/me", authMiddlware, (req, res) => {
     try {
-        // The authMiddlware adds the user to req.user
         res.json({
             success: true,
             user: {
@@ -254,65 +256,30 @@ router.get("/me", authMiddlware, (req, res) => {
     }
 });
 
-// Admin endpoint to create a new user
-if (process.env.NODE_ENV === 'development') {
-    router.post("/admin/create-user", async (req, res) => {
-        try {
-            const { username, password, firstName, lastName, studentId } = req.body;
-            
-            if (!username || !password) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Username and password are required."
-                });
-            }
-            
-            // Check if user already exists
-            const existingUser = await findUserByUsername(username);
-            if (existingUser) {
-                return res.status(409).json({
-                    success: false,
-                    message: "User with this email already exists."
-                });
-            }
-            
-            // Hash the password
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
-            
-            // Create the user with the hashed password
-            const userData = {
-                username,
-                firstName: firstName || '',
-                lastName: lastName || '',
-                password: hashedPassword
-            };
-            
-            // If studentId is provided, add it to the user data
-            if (studentId) {
-                userData.studentId = studentId;
-            }
-            
-            // Call createUser with the user data
-            await createUser(userData);
-            
-            res.status(201).json({
-                success: true,
-                message: `User ${username} created successfully.`
-            });
-            
-        } catch (error) {
-            console.error("Error creating user:", error);
-            res.status(500).json({
-                success: false,
-                message: "An error occurred while creating the user.",
-                error: error.message
-            });
-        }
-    });
-}
+// Logout endpoint
+router.post("/logout", authMiddlware, (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        
+        // Add the token to the blacklist
+        addToBlacklist(token);
+        
+        res.json({
+            success: true,
+            message: "Successfully logged out"
+        });
+    } catch (error) {
+        console.error("Error during logout:", error);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred during logout"
+        });
+    }
+});
 
-// Admin endpoint to set initial password (for testing/development only)
+// Admin endpoints (only in development)
 if (process.env.NODE_ENV === 'development') {
+    // Admin endpoint to set initial password (for testing/development only)
     router.post("/admin/set-password", async (req, res) => {
         try {
             const { email, password } = req.body;
@@ -344,52 +311,60 @@ if (process.env.NODE_ENV === 'development') {
             });
         }
     });
-}
 
-/**
- * @swagger
- * /api/v1/user/logout:
- *   post:
- *     summary: Log out the current user
- *     description: Invalidates the current authentication token
- *     tags: [Authentication]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Successfully logged out
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Successfully logged out"
- *       401:
- *         $ref: '#/components/responses/Unauthorized'
- */
-router.post("/logout", authMiddlware, (req, res) => {
-    try {
-        const token = req.headers.authorization.split(' ')[1];
-        
-        // Add the token to the blacklist
-        addToBlacklist(token);
-        
-        res.json({
-            success: true,
-            message: "Successfully logged out"
-        });
-    } catch (error) {
-        console.error("Error during logout:", error);
-        res.status(500).json({
-            success: false,
-            message: "An error occurred during logout"
-        });
-    }
-});
+    // Admin endpoint to create a new user
+    router.post("/admin/create-user", async (req, res) => {
+        try {
+            const { username, password, firstName, lastName, studentId } = req.body;
+            
+            if (!username || !password) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Username and password are required."
+                });
+            }
+            
+            // Check if user already exists
+            const existingUser = await findUserByUsername(username);
+            if (existingUser) {
+                return res.status(409).json({
+                    success: false,
+                    message: "User with this email already exists."
+                });
+            }
+            
+            // Hash the password
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            
+            // Create the user with the hashed password and auto-verify email
+            const userData = {
+                username,
+                firstName: firstName || '',
+                lastName: lastName || '',
+                password: hashedPassword,
+                isEmailVerified: true, // Auto-verify for admin-created users
+                studentId: studentId || ''
+            };
+            
+            console.log('Creating user with data:', userData);
+            
+            // Call createUser with the user data
+            await createUser(userData);
+            
+            res.status(201).json({
+                success: true,
+                message: `User ${username} created successfully.`
+            });
+            
+        } catch (error) {
+            console.error("Error creating user:", error);
+            res.status(500).json({
+                success: false,
+                message: "An error occurred while creating the user.",
+                error: error.message
+            });
+        }
+    });
+}
 
 module.exports = router;

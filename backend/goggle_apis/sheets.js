@@ -4,12 +4,14 @@ const fs = require('fs');
 const { GOOGLE_KEY_FILE, GOOGLE_SPREADSHEET_ID, GOOGLE_USERS_SHEET_NAME, SHEET_NAMES } = require('../config');
 
 // Define the columns for your user data. This helps in accessing data by name instead of index.
-// Based on the actual Master_Students sheet structure:
+// Updated based on the actual Students sheet structure
 const USER_COLUMNS = {
-	USERNAME: 2,      // Column C - "Email address"
-	FIRST_NAME: 3,    // Column D - "First Name"
-	LAST_NAME: 5,     // Column F - "Last Name"
-	PASSWORD_HASH: 23, // Column X - "Password"
+	STUDENT_ID: 0,        // Column A - "Student_ID"
+	FIRST_NAME: 1,        // Column B - "First_Name"
+	LAST_NAME: 2,         // Column C - "Last_Name"
+	USERNAME: 3,          // Column D - "Email"
+	PASSWORD_HASH: 15,    // Column P (16th column, 0-based index 15) - Password hash
+	IS_EMAIL_VERIFIED: 23 // Column X (24th column, 0-based index 23) - Email verification status
 };
 
 function resolveKeyFilePath(configPath) {
@@ -66,63 +68,64 @@ function columnIndexToLetter(index) {
  */
 async function findUserByUsername(username) {
   try {
-    const sheets = await getSheetsClient();
-    const range = `${GOOGLE_USERS_SHEET_NAME}!A:X`;
-
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: GOOGLE_SPREADSHEET_ID,
-      range: range,
-    });
-
-    const rows = response.data.values || [];
-    if (!rows.length) return null;
-
-    // Header-based detection to be resilient to column shifts/renames
+    console.log('Looking for user with username:', username);
+    const rows = await readSheetData(GOOGLE_USERS_SHEET_NAME);
+    
+    if (!rows || rows.length === 0) {
+      console.log('No data found in the sheet');
+      return null;
+    }
+    
+    console.log('First few rows from sheet:', rows.slice(0, 3));
+    
+    // Get headers (first row)
     const headers = (rows[0] || []).map(h => (h || '').toString().trim().toLowerCase());
-    const findIdx = (names) => {
-      for (const n of names) {
-        const idx = headers.indexOf(n.toLowerCase());
-        if (idx >= 0) return idx;
+    console.log('Headers:', headers);
+    
+    // Find column indices by header names
+    const findColumnIndex = (possibleNames) => {
+      for (const name of possibleNames) {
+        const index = headers.indexOf(name.toLowerCase());
+        if (index >= 0) return index;
       }
       return -1;
     };
-
-    // Try to detect columns by header; fall back to configured fixed indices
-    const emailIdx = (() => {
-      const idx = findIdx(['email address','email','username','user','email id','e-mail']);
-      return idx >= 0 ? idx : USER_COLUMNS.USERNAME;
-    })();
-    const firstNameIdx = (() => {
-      const idx = findIdx(['first name','firstname','first']);
-      return idx >= 0 ? idx : USER_COLUMNS.FIRST_NAME;
-    })();
-    const lastNameIdx = (() => {
-      const idx = findIdx(['last name','lastname','last']);
-      return idx >= 0 ? idx : USER_COLUMNS.LAST_NAME;
-    })();
-    const passwordIdx = (() => {
-      const idx = findIdx(['password hash','password','hash']);
-      return idx >= 0 ? idx : USER_COLUMNS.PASSWORD_HASH;
-    })();
-
-    const target = (username || '').toString().trim().toLowerCase();
-
+    
+    // Try to find email column with common header names
+    const emailColumn = findColumnIndex(['email', 'username', 'user', 'email address']) || USER_COLUMNS.USERNAME;
+    console.log('Using column index', emailColumn, 'for email/username');
+    
+    // Skip header row and find matching user
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i] || [];
-      const email = (row[emailIdx] || '').toString().trim().toLowerCase();
-      if (email && email === target) {
+      if (!row || row.length <= emailColumn) {
+        console.log('Skipping row', i + 1, 'due to missing data');
+        continue;
+      }
+      
+      const userEmail = (row[emailColumn] || '').toString().toLowerCase().trim();
+      console.log(`Row ${i + 1} - Email:`, userEmail);
+      
+      if (userEmail === username.toLowerCase().trim()) {
+        console.log('Found matching user at row', i + 1, ':', row);
+        // Return an object with the row data and column indices
         return {
-          username: row[emailIdx] || '',
-          firstName: row[firstNameIdx] || '',
-          lastName: row[lastNameIdx] || '',
-          password: row[passwordIdx] || '',
+          row,
+          email: userEmail,
+          firstName: row[USER_COLUMNS.FIRST_NAME] || '',
+          lastName: row[USER_COLUMNS.LAST_NAME] || '',
+          password: row[USER_COLUMNS.PASSWORD_HASH] || '',
+          studentId: row[USER_COLUMNS.STUDENT_ID] || '',
+          isEmailVerified: row[USER_COLUMNS.IS_EMAIL_VERIFIED] || false
         };
       }
     }
+    
+    console.log('No user found with username:', username);
     return null;
-  } catch (err) {
-    console.error('Error reading from Google Sheet:', err);
-    throw new Error('Could not access the database.');
+  } catch (error) {
+    console.error('Error in findUserByUsername:', error);
+    throw error;
   }
 }
 

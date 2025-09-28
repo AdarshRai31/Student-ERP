@@ -1,5 +1,5 @@
 const express = require('express');
-const { readSheetData, appendToSheet, updateSheetData, SHEET_NAMES } = require('../goggle_apis/sheets');
+const { readSheetData, appendToSheet, updateSheetData, SHEET_NAMES, getAllSheets } = require('../goggle_apis/sheets');
 
 const router = express.Router();
 
@@ -12,6 +12,28 @@ function countRows(rows) {
 
 // GET /public/metrics
 // Returns basic counts for dashboard visuals
+// List all sheets in the spreadsheet
+router.get('/sheets', async (req, res) => {
+  try {
+    const sheets = await getAllSheets();
+    res.json({ success: true, sheets });
+  } catch (err) {
+    console.error('Error listing sheets:', err);
+    res.status(500).json({ success: false, message: 'Error listing sheets', error: err.message });
+  }
+});
+
+// Preview the first few rows of the Students sheet
+router.get('/preview/students', async (req, res) => {
+  try {
+    const data = await readSheetData('Students', 'A1:Z5'); // First 5 rows, columns A-Z
+    res.json({ success: true, headers: data[0], data: data.slice(1) });
+  } catch (err) {
+    console.error('Error previewing Students sheet:', err);
+    res.status(500).json({ success: false, message: 'Error previewing Students sheet', error: err.message });
+  }
+});
+
 router.get('/metrics', async (req, res) => {
   try {
     const [students, faculty, courses] = await Promise.all([
