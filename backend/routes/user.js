@@ -107,13 +107,13 @@ router.post("/signup", authLimiter, async (req, res) => {
             });
         }
         
-        // Check if email is verified
-        if (!user.isEmailVerified) {
-            return res.status(403).json({
-                success: false,
-                message: "Please verify your email address before logging in. Check your email for a verification link."
-            });
-        }
+        // Check if email is verified - temporarily disabled for development
+        // if (!user.isEmailVerified) {
+        //     return res.status(403).json({
+        //         success: false,
+        //         message: "Please verify your email address before logging in. Check your email for a verification link."
+        //     });
+        // }
 
         // Log the user object to see what we're working with
         console.log('User data from sheet:', user);

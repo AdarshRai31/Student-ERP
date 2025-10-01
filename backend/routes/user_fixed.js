@@ -113,14 +113,14 @@ router.post("/signin", authLimiter, async (req, res) => {
             });
         }
         
-        // Check if email is verified (handle both boolean and string 'TRUE')
-        const isVerified = user.isEmailVerified === true || user.isEmailVerified === 'TRUE';
-        if (!isVerified) {
-            return res.status(403).json({
-                success: false,
-                message: "Please verify your email address before logging in."
-            });
-        }
+        // Check if email is verified - temporarily disabled for development
+        // const isVerified = user.isEmailVerified === true || user.isEmailVerified === 'TRUE';
+        // if (!isVerified) {
+        //     return res.status(403).json({
+        //         success: false,
+        //         message: "Please verify your email address before logging in."
+        //     });
+        // }
 
         // Check if password hash exists
         const passwordHash = user.password || '';
