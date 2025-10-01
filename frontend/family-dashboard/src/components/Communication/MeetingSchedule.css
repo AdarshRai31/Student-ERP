@@ -1,0 +1,217 @@
+.meeting-schedule {
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.meetings-tabs {
+  display: flex;
+  border-bottom: 1px solid #ecf0f1;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #7f8c8d;
+  border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+  color: #3498db;
+  border-bottom-color: #3498db;
+}
+
+.meetings-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.meeting-card {
+  display: flex;
+  padding: 1rem;
+  border: 1px solid #ecf0f1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.meeting-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.meeting-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: #3498db;
+  color: white;
+  border-radius: 8px;
+  margin-right: 1rem;
+}
+
+.date-day {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.date-month {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.meeting-details {
+  flex: 1;
+}
+
+.meeting-details h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+}
+
+.meeting-time {
+  margin: 0 0 0.5rem 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.participant-tag {
+  padding: 0.25rem 0.5rem;
+  background: #f8f9fa;
+  color: #7f8c8d;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.meeting-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.join-btn, .details-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.join-btn {
+  background: #27ae60;
+  color: white;
+}
+
+.details-btn {
+  background: #3498db;
+  color: white;
+}
+
+.no-meetings {
+  padding: 2rem;
+  text-align: center;
+  color: #7f8c8d;
+}
+
+.meeting-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #7f8c8d;
+}
+
+.modal-details {
+  margin: 1rem 0;
+}
+
+.modal-details p {
+  margin: 0.5rem 0;
+  color: #2c3e50;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.add-calendar-btn, .reminder-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-calendar-btn {
+  background: #3498db;
+  color: white;
+}
+
+.reminder-btn {
+  background: #f39c12;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .meeting-card {
+    flex-direction: column;
+  }
+  
+  .meeting-date {
+    margin-right: 0;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+  }
+  
+  .meeting-actions {
+    flex-direction: row;
+    margin-top: 1rem;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+}

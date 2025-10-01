@@ -1,0 +1,114 @@
+.guardian-details {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.guardians-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.guardian-card {
+  padding: 1rem;
+  border: 1px solid #ecf0f1;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.guardian-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.guardian-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.guardian-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.role-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.role-badge.primary {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.role-badge.secondary {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.relationship {
+  color: #7f8c8d;
+  margin: 0 0 1rem 0;
+}
+
+.contact-info {
+  margin-bottom: 1rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.contact-item .icon {
+  margin-right: 0.5rem;
+  width: 20px;
+}
+
+.contact-item a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.contact-item a:hover {
+  text-decoration: underline;
+}
+
+.guardian-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.contact-btn {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background: #3498db;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.contact-btn:hover {
+  background: #2980b9;
+}
+
+@media (max-width: 768px) {
+  .guardian-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .guardian-actions {
+    flex-direction: column;
+  }
+}

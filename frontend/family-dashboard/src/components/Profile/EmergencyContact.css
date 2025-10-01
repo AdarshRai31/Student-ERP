@@ -1,0 +1,112 @@
+.emergency-contact {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.contacts-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.contact-card {
+  padding: 1rem;
+  border: 1px solid #ecf0f1;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contact-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.contact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.contact-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.relationship {
+  background: #fff3e0;
+  color: #e65100;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.contact-details {
+  margin-bottom: 1rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.contact-item .icon {
+  margin-right: 0.5rem;
+  width: 20px;
+}
+
+.contact-item a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.contact-item a:hover {
+  text-decoration: underline;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.call-btn, .message-btn {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.call-btn {
+  background: #e74c3c;
+  color: white;
+}
+
+.message-btn {
+  background: #3498db;
+  color: white;
+}
+
+.call-btn:hover {
+  background: #c0392b;
+}
+
+.message-btn:hover {
+  background: #2980b9;
+}
+
+@media (max-width: 768px) {
+  .contact-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .contact-actions {
+    flex-direction: column;
+  }
+}

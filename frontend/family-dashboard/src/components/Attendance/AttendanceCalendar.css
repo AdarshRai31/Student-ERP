@@ -1,0 +1,145 @@
+.attendance-calendar {
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header button {
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: bold;
+  color: #7f8c8d;
+  padding: 0.5rem;
+}
+
+.calendar-day {
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+.calendar-day.present {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.calendar-day.absent {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.calendar-day.half-day {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.calendar-day.holiday {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.calendar-day.empty {
+  background: transparent;
+}
+
+.day-status {
+  position: absolute;
+  bottom: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.calendar-day.present .day-status {
+  background: #2e7d32;
+}
+
+.calendar-day.absent .day-status {
+  background: #c62828;
+}
+
+.calendar-day.half-day .day-status {
+  background: #e65100;
+}
+
+.calendar-day.holiday .day-status {
+  background: #7b1fa2;
+}
+
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.color-present, .color-absent, .color-half-day, .color-holiday {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.color-present {
+  background: #e8f5e9;
+}
+
+.color-absent {
+  background: #ffebee;
+}
+
+.color-half-day {
+  background: #fff3e0;
+}
+
+.color-holiday {
+  background: #f3e5f5;
+}
+
+@media (max-width: 768px) {
+  .calendar-grid {
+    gap: 0.25rem;
+  }
+  
+  .calendar-day {
+    height: 35px;
+    font-size: 0.8rem;
+  }
+  
+  .calendar-legend {
+    gap: 0.5rem;
+  }
+}

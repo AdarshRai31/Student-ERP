@@ -1,0 +1,118 @@
+.fee-status {
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.fee-progress {
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+  height: 10px;
+  background: #ecf0f1;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.paid {
+  background: #27ae60;
+}
+
+.progress-fill.partial {
+  background: #f39c12;
+}
+
+.progress-fill.pending {
+  background: #e74c3c;
+}
+
+.progress-text {
+  text-align: center;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.fee-details {
+  margin-bottom: 1.5rem;
+}
+
+.fee-detail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.fee-detail:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.label {
+  color: #7f8c8d;
+}
+
+.value {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.status-paid {
+  color: #27ae60;
+}
+
+.status-partial {
+  color: #f39c12;
+}
+
+.status-pending {
+  color: #e74c3c;
+}
+
+.fee-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pay-button, .download-button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.pay-button {
+  background: #3498db;
+  color: white;
+}
+
+.download-button {
+  background: #ecf0f1;
+  color: #2c3e50;
+}
+
+.pay-button:hover {
+  background: #2980b9;
+}
+
+.download-button:hover {
+  background: #bdc3c7;
+}
+
+@media (max-width: 768px) {
+  .fee-actions {
+    flex-direction: column;
+  }
+}

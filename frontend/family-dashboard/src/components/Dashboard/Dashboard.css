@@ -1,0 +1,109 @@
+.dashboard {
+  padding: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Responsive grid layouts */
+.profile-section,
+.academic-content,
+.communication-content,
+.financial-content,
+.transport-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Section headers */
+.dashboard h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+/* Card styles */
+.stat-card,
+.guardian-card,
+.contact-card,
+.assignment-card,
+.meeting-card,
+.log-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover,
+.guardian-card:hover,
+.contact-card:hover,
+.assignment-card:hover,
+.meeting-card:hover,
+.log-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 0.5rem;
+  }
+  
+  .profile-section,
+  .academic-content,
+  .communication-content,
+  .financial-content,
+  .transport-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 1rem;
+  }
+  
+  .dashboard h2 {
+    font-size: 1.5rem;
+  }
+  
+  .dashboard h3 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Theme support */
+.dark-theme .stat-card,
+.dark-theme .guardian-card,
+.dark-theme .contact-card,
+.dark-theme .assignment-card,
+.dark-theme .meeting-card,
+.dark-theme .log-card {
+  background: #2c3e50;
+  color: white;
+}
+
+.dark-theme .dashboard h3 {
+  color: #ecf0f1;
+  border-bottom-color: #34495e;
+}
