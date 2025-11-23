@@ -253,6 +253,54 @@ async function updateUserPassword(username, hashedPassword) {
   }
 }
 
+/**
+ * Updates the email verification status for a user in the Google Sheet.
+ * @param {string} username - The username (email) to update.
+ * @param {boolean} isVerified - The new verification status.
+ * @returns {Promise<Object>} The result of the update operation.
+ */
+async function updateUserVerificationStatus(username, isVerified = true) {
+    try {
+        const sheets = await getSheetsClient();
+        const sheetName = SHEET_NAMES.USERS || 'Students';
+        
+        // Find the user's row
+        const matches = await findRowsInSheet(
+            sheetName,
+            (row, index) => {
+                if (index === 0) return false; // Skip header
+                return (row[USER_COLUMNS.USERNAME] || '').toString().toLowerCase() === username.toLowerCase();
+            }
+        );
+
+        if (matches.length === 0) {
+            throw new Error('User not found');
+        }
+
+        const { rowNumber } = matches[0];
+        const columnLetter = columnIndexToLetter(USER_COLUMNS.IS_EMAIL_VERIFIED);
+        const range = `${sheetName}!${columnLetter}${rowNumber}`;
+
+        const result = await sheets.spreadsheets.values.update({
+            spreadsheetId: GOOGLE_SPREADSHEET_ID,
+            range,
+            valueInputOption: 'USER_ENTERED',
+            resource: {
+                values: [[isVerified ? 'TRUE' : 'FALSE']]
+            }
+        });
+
+        return {
+            success: true,
+            updatedRows: 1,
+            data: result.data
+        };
+    } catch (error) {
+        console.error('Error updating verification status:', error);
+        throw error;
+    }
+}
+
 // ==================== GENERIC SHEET FUNCTIONS ====================
 
 /**
@@ -371,6 +419,7 @@ module.exports = {
 	findUserByUsername,
 	createUser,
 	updateUserPassword,
+	updateUserVerificationStatus,
 	
 	// Generic sheet functions
 	readSheetData,
